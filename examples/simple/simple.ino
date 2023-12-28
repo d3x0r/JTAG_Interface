@@ -58,9 +58,15 @@ void loop() {
 	Serial.println();
 
 	// On the FPGA, a counter is connected to input 9
-	uint32_t ticks = FPGA.read(9);
+	uint32_t ticks = FPGA.read(7);
+	uint32_t ticks2 = FPGA.read(9);
+	uint32_t ticks3 = FPGA.read(11);
 	Serial.print("The FPGA program has been running for ");
 	Serial.print(ticks);
+	Serial.print(" ");
+	Serial.print(ticks2);
+	Serial.print(" ");
+	Serial.print(ticks3);
 	Serial.print(" ticks, that is ");
 	Serial.print(ticks / 120000000.0);
 	Serial.println(" seconds.");
