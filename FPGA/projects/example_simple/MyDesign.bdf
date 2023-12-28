@@ -1011,16 +1011,6 @@ https://fpgasoftware.intel.com/eula.
 )
 (connector
 	(pt 1344 240)
-	(pt 1464 240)
-	(bus)
-)
-(connector
-	(pt 1344 264)
-	(pt 1464 264)
-	(bus)
-)
-(connector
-	(pt 1344 240)
 	(pt 1344 264)
 	(bus)
 )
@@ -1028,10 +1018,6 @@ https://fpgasoftware.intel.com/eula.
 	(pt 1344 264)
 	(pt 1344 288)
 	(bus)
-)
-(connector
-	(pt 432 640)
-	(pt 176 640)
 )
 (connector
 	(pt 176 640)
@@ -1046,10 +1032,6 @@ https://fpgasoftware.intel.com/eula.
 	(pt 1520 264)
 )
 (connector
-	(pt 432 624)
-	(pt 160 624)
-)
-(connector
 	(pt 160 624)
 	(pt 160 928)
 )
@@ -1060,6 +1042,26 @@ https://fpgasoftware.intel.com/eula.
 (connector
 	(pt 1536 928)
 	(pt 1536 240)
+)
+(connector
+	(text "rst[3]" (rect 1354 248 1378 265)(font "Intel Clear" ))
+	(pt 1344 264)
+	(pt 1464 264)
+	(bus)
+)
+(connector
+	(text "rst[2]" (rect 1354 224 1378 241)(font "Intel Clear" ))
+	(pt 1344 240)
+	(pt 1464 240)
+	(bus)
+)
+(connector
+	(pt 1520 264)
+	(pt 1464 264)
+)
+(connector
+	(pt 1536 240)
+	(pt 1464 240)
 )
 (junction (pt 320 224))
 (junction (pt 320 200))
