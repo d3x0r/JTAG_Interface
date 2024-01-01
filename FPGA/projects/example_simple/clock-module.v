@@ -61,7 +61,8 @@ reg rstLatchLock2 = 0;  // pending reset signal, iResetLatch2 was signaled, but 
 // if iResetLatch* is signaled and iLatch* is still set, then set rstLatchLock*, then when latchLock* is reset
 // if rstLatchLock* is set, reset latckLock*.
 
-/*
+
+
 always 
 begin
     #1
@@ -76,10 +77,9 @@ begin
 	 debug[7] = rstLatchLock2;
 	 debug[8] = oRdyCOUNTER;
 	 debug[9] = oRdyCOUNTER2;
-	 debug[31:16] = rCOUNTER[15:0];
+	 debug[22:16] = rSynthClock[6:0];
 end
-*/
-assign debug = 0;
+//assign debug = 0;
 
 always begin	 
    latchLock1 <= ( iLatch1 || latchLock1 ) && !( !iLatch1 && ( rstLatchLock1 ||iResetLatch1 ) );
@@ -102,30 +102,16 @@ end
 
 
 always begin
+   #1
 	rSynthClock[0] = !rSynthClock[0];
-	if( rSynthClock[0] ) begin
-		rSynthClock[1] = !rSynthClock[1];
-		if( rSynthClock[1] ) begin
-			rSynthClock[2] = !rSynthClock[2];
-		
-			if( rSynthClock[2] ) begin
-				rSynthClock[3] = !rSynthClock[3];
-			
-				if( rSynthClock[3] ) begin
-					rSynthClock[4] = !rSynthClock[4];
-				
-					if( rSynthClock[4] ) begin
-						rSynthClock[5] = !rSynthClock[5];
-						if( rSynthClock[5] ) begin
-							rSynthClock[6] = !rSynthClock[6];
-						end
-					end
-				end
-			end
-		end
-	
-	end
 end
+
+always @(posedge rSynthClock[0] ) rSynthClock[1] = !rSynthClock[1];
+always @(posedge rSynthClock[1] ) rSynthClock[2] = !rSynthClock[2];
+always @(posedge rSynthClock[2] ) rSynthClock[3] = !rSynthClock[3];
+always @(posedge rSynthClock[3] ) rSynthClock[4] = !rSynthClock[4];
+always @(posedge rSynthClock[4] ) rSynthClock[5] = !rSynthClock[5];
+always @(posedge rSynthClock[5] ) rSynthClock[6] = !rSynthClock[6];
 
 
 
@@ -261,18 +247,9 @@ always begin  #5    iCLK_ff[25] = iCLK_ff_p[25] ^ iCLK_ff_n[25];  end
 
 
 
-
-/*
-	#1
-	iCLK_ff[3] = !iCLK_ff[2];
-	#1
-	iCLK_ff[4] = !iCLK_ff[3];	
-end
-*/
-
-//always @(posedge iCLK_ff) if( iCLK_ff1 ) iCLK_ff1 = 0; else iCLK_ff1 = 1;
-
-always @(posedge rSynthClock[6])
+//
+//always @(posedge rSynthClock[2])
+always @(posedge globalClock)
 begin
       #1
 		rCOUNTER = rCOUNTER+1;

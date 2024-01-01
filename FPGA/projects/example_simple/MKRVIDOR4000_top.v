@@ -172,7 +172,6 @@ MyDesign MyDesign_inst(
 	.D6(bMKR_D[6]),
 	.D7(bMKR_D[7]),
 	.D8(bMKR_D[8])//,
-	//.iCLK_FAST(wOSC_CLK)		// Attach main 120MHz clock
 );
 
 
