@@ -46,6 +46,7 @@ reg [25:0] rPhaseLatch2 = 0;  // latched counter value 2
 reg [25:0] iCLK_ff = 0;  // the flip-flopped clock gate
 reg [25:0] iCLK_ff_p = 0;  // the flip-flopped clock gate
 reg [25:0] iCLK_ff_n = 0;  // the flip-flopped clock gate
+reg [6:0] rSynthClock = 0;
 
 reg latchLock1 = 0;     // iLatch1 was set, and the value is copied to rLatch1; prevents update to register 1 until reset
 reg latchLock2 = 0;     // iLatch2 was signaled, the value is copied to rLatch2; prevents update to reigster 2 until reset
@@ -100,6 +101,31 @@ always @(posedge iLatch2 ) begin
 end
 
 
+always begin
+	rSynthClock[0] = !rSynthClock[0];
+	if( rSynthClock[0] ) begin
+		rSynthClock[1] = !rSynthClock[1];
+		if( rSynthClock[1] ) begin
+			rSynthClock[2] = !rSynthClock[2];
+		
+			if( rSynthClock[2] ) begin
+				rSynthClock[3] = !rSynthClock[3];
+			
+				if( rSynthClock[3] ) begin
+					rSynthClock[4] = !rSynthClock[4];
+				
+					if( rSynthClock[4] ) begin
+						rSynthClock[5] = !rSynthClock[5];
+						if( rSynthClock[5] ) begin
+							rSynthClock[6] = !rSynthClock[6];
+						end
+					end
+				end
+			end
+		end
+	
+	end
+end
 
 
 
@@ -246,7 +272,7 @@ end
 
 //always @(posedge iCLK_ff) if( iCLK_ff1 ) iCLK_ff1 = 0; else iCLK_ff1 = 1;
 
-always @(posedge globalClock)
+always @(posedge rSynthClock[6])
 begin
       #1
 		rCOUNTER = rCOUNTER+1;
