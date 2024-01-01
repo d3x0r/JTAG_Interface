@@ -139,7 +139,7 @@ void readFPGA() {
     Serial.println();
 
     // On the FPGA, a counter is connected to input 9
-    uint32_t ticks = FPGA.read(7);
+    uint32_t ticks = 0;//FPGA.read(7);
     uint32_t debug = FPGA.read(8);
     uint32_t ticks2_low = FPGA.read(9);
     uint32_t ticks2 = FPGA.read(10);
