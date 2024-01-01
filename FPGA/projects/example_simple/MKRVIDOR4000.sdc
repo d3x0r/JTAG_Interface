@@ -42,13 +42,13 @@ set_time_format -unit ns -decimal_places 3
 create_clock -name {altera_reserved_tck} -period 100.000 -waveform { 0.000 50.000 } [get_ports {altera_reserved_tck}]
 create_clock -name {iCLK} -period 10.000 -waveform { 0.000 5.000 } [get_nets {iCLK}]
 
-create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[0]} -period 5  [get_nets {MyDesign_inst|inst6|rSynthClock[0]}]
-create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[1]} -period 10  [get_nets {MyDesign_inst|inst6|rSynthClock[1]}]
-create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[2]} -period 20  [get_nets {MyDesign_inst|inst6|rSynthClock[2]}]
-create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[3]} -period 30  [get_nets {MyDesign_inst|inst6|rSynthClock[3]}]
-create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[4]} -period 40  [get_nets {MyDesign_inst|inst6|rSynthClock[4]}]
-create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[5]} -period 50  [get_nets {MyDesign_inst|inst6|rSynthClock[5]}]
-create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[6]} -period 60  [get_nets {MyDesign_inst|inst6|rSynthClock[6]}]
+create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[0]} -period 0.4  [get_nets {MyDesign_inst|inst6|rSynthClock[0]}]
+create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[1]} -period 0.8  [get_nets {MyDesign_inst|inst6|rSynthClock[1]}]
+create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[2]} -period 1.6  [get_nets {MyDesign_inst|inst6|rSynthClock[2]}]
+create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[3]} -period 3.2  [get_nets {MyDesign_inst|inst6|rSynthClock[3]}]
+create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[4]} -period 6.4  [get_nets {MyDesign_inst|inst6|rSynthClock[4]}]
+create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[5]} -period 12.8  [get_nets {MyDesign_inst|inst6|rSynthClock[5]}]
+create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|rSynthClock[6]} -period 25.6  [get_nets {MyDesign_inst|inst6|rSynthClock[6]}]
 
 create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|iCLK_ff_n[0]} -period 10.000 -waveform { 0.200 5.400 } [get_nets {MyDesign_inst|inst6|iCLK_ff[0]}]
 create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|iCLK_ff_n[1]} -period 10.000 -waveform { 0.400 5.600 } [get_nets {MyDesign_inst|inst6|iCLK_ff[1]}]
@@ -111,7 +111,6 @@ create_clock -name {MyDesign:MyDesign_inst|COUNTER:inst6|iCLK_ff_n[24]} -period 
 # Set Clock Groups
 #**************************************************************
 
-set_clock_groups -asynchronous -group [get_clocks {altera_reserved_tck}] 
 set_clock_groups -asynchronous -group [get_clocks {altera_reserved_tck}] 
 
 

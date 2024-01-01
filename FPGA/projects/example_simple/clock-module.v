@@ -43,7 +43,7 @@ reg [25:0] rPhaseLatch1 = 0;  // latched counter value 1
 reg [pWIDTH-1:0] rLatch2 = 0;  // latched counter value 2
 reg [25:0] rPhaseLatch2 = 0;  // latched counter value 2
 
-reg [25:0] iCLK_ff = 0;  // the flip-flopped clock gate
+reg [25:0] iCLK_ff = 26'b1;  // the flip-flopped clock gate
 reg [25:0] iCLK_ff_p = 0;  // the flip-flopped clock gate
 reg [25:0] iCLK_ff_n = 0;  // the flip-flopped clock gate
 reg [6:0] rSynthClock = 0;
@@ -115,6 +115,7 @@ always @(posedge rSynthClock[5] ) rSynthClock[6] = !rSynthClock[6];
 
 
 
+/*
 always @(posedge globalClock ) 	iCLK_ff_p[0] = !(iCLK_ff_n[0]);
 always @(negedge globalClock) 	iCLK_ff_n[0] = (iCLK_ff_p[0]);
 always begin  #5    iCLK_ff[0] = iCLK_ff_p[0] ^ iCLK_ff_n[0];  end
@@ -243,13 +244,12 @@ always begin  #5    iCLK_ff[24] = iCLK_ff_p[24] ^ iCLK_ff_n[24];  end
 always @(posedge iCLK_ff[24] ) 	iCLK_ff_p[25] = !(iCLK_ff_n[25]);
 always @(negedge iCLK_ff[24]) 	iCLK_ff_n[25] = (iCLK_ff_p[25]);
 always begin  #5    iCLK_ff[25] = iCLK_ff_p[25] ^ iCLK_ff_n[25];  end
-
-
+*/
 
 
 //
-//always @(posedge rSynthClock[2])
-always @(posedge globalClock)
+always @(posedge rSynthClock[2])
+//always @(posedge globalClock)
 begin
       #1
 		rCOUNTER = rCOUNTER+1;
