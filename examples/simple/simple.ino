@@ -46,6 +46,7 @@ uint32_t ticks3_ = 0;
 uint32_t last_millis = 0;
 uint32_t reset_millis;
 uint32_t reset = 0;
+//#define _DEBUG
 
 void readFPGA();
 void readSerial();
@@ -54,7 +55,9 @@ void readFPGALive();
 void loop() {
   readSerial();
   readFPGALive();
+#ifdef _DEBUG  
   readFPGA();
+#endif  
 }
 
 void readSerial() {
@@ -62,13 +65,14 @@ void readSerial() {
   while (Serial.available() > 0) {
     // read the incoming byte:
     int incomingByte = Serial.read();
-    FPGA.write( 9, incomingByte );
+    FPGA.write( 6, incomingByte );
     // reset |= incomingByte & 0xC;
     // say what you got:
+#ifdef _DEBUG
     Serial.print(millis());
     Serial.print(":I received: ");
-    //Serial.print(millis())
     Serial.println(incomingByte, DEC);
+#endif
   }
 
 }
@@ -78,28 +82,33 @@ void readFPGALive() {
     static union {
       unsigned char buf[8];
       struct {
-        uint32_t clkhi;
         uint32_t clk;
+        uint32_t clkhi;
+        uint32_t clkphase;
       }data;
     } buf;
 	uint8_t pins = FPGA.read(13);
-  if( !( pins & 1 ) & ( reset & 1 ) )
+  if( !( pins & 1 ) && ( reset & 1 ) )
     reset &= ~1;
   if( !(reset & 1) && ( pins & 1 )  ) {    
+    //Serial.println( "Sending clock 1");
     buf.data.clk = FPGA.read( 9 );
     buf.data.clkhi = FPGA.read( 10 );
+    buf.data.clkphase = FPGA.read( 11 );
     Serial.write( (char)0 );
-    for( int i = 0; i < 8; i++ )
+    for( int i = 0; i < 12; i++ )
       Serial.write( buf.buf[i] );
     reset |= 1;
   } 
-  if( !( pins & 2 ) & ( reset & 2 ) )
+  if( !( pins & 2 ) && ( reset & 2 ) )
     reset &= ~2;
   if( !(reset & 2) && ( pins & 2 )  ) {    
-    buf.data.clk = FPGA.read( 11 );
-    buf.data.clkhi = FPGA.read( 12 );
+    //Serial.println( "Sending clock 2");
+    buf.data.clk = FPGA.read( 12 );
+    buf.data.clkhi = FPGA.read( 6 );
+    buf.data.clkphase = FPGA.read( 7 );
     Serial.write( (char)1 );
-    for( int i = 0; i < 8; i++ )
+    for( int i = 0; i < 12; i++ )
       Serial.write( buf.buf[i] );
     reset |= 2;
   } 
@@ -107,11 +116,10 @@ void readFPGALive() {
 
 void readFPGA() {
   uint32_t m;
-  if( (m=millis()) - last_millis > 50 ) {
+  if( (m=millis()) - last_millis > 500 ) {
     last_millis = m;
 
-
-    // Bits 0, 1 & 2 of output register 0 are connected to 
+  // Bits 0, 1 & 2 of output register 0 are connected to 
     // outputs D6, D7 and D8 on the FPGA (see MKRVIDOR4000_top.v)
     FPGA.write(0, 0b111);
 
@@ -135,31 +143,35 @@ void readFPGA() {
     uint32_t debug = FPGA.read(8);
     uint32_t ticks2_low = FPGA.read(9);
     uint32_t ticks2 = FPGA.read(10);
-    uint32_t ticks3_low = FPGA.read(11);
-    uint32_t ticks3 = FPGA.read(12);
+    uint32_t ticks2_phase = FPGA.read(11);
+    uint32_t ticks3_low = FPGA.read(12);
+    uint32_t ticks3 = FPGA.read(6);
+    uint32_t ticks3_phase = FPGA.read(7);
     uint8_t pins2 = FPGA.read(13);
   
     Serial.print(millis());
     Serial.print(":The FPGA program has been running for ");
+    Serial.print(reset, HEX);
+    Serial.print(" dbg:");
     Serial.print(debug, HEX);
     Serial.print(" pins:");
     Serial.print(pins2);
-    Serial.print(" tl2d:");
-    Serial.print(ticks2_low, HEX);
     Serial.print(" t2:");
     Serial.print(ticks2, HEX);
+    Serial.print(" tl2d:");
+    Serial.print(ticks2_low, HEX);
+    Serial.print(" tl2p:");
+    Serial.print(ticks2_phase, HEX);
+    Serial.print(" t3:");
+    Serial.println(ticks3, HEX);
     Serial.print(" tl3d:");
     Serial.print(ticks3_low, HEX);
-    Serial.print(" t3:");
-    Serial.print(ticks3, HEX);
+    Serial.print(" t3p:");
+    Serial.println(ticks3_phase, HEX);
 
-    ticks2low_ = ticks2_low;
-    ticks2_ = ticks2;
-    ticks3low_ = ticks3_low;
-    ticks3_ = ticks3;
-    Serial.print(" ticks, that is ");
-    Serial.print(ticks / 120000000.0);
-    Serial.println(" seconds.");
+//    Serial.print(" ticks, that is ");
+//    Serial.print(ticks / 120000000.0);
+//    Serial.println(" seconds.");
 
     //0.000 000 017 8
     //0.000 000 003.89
