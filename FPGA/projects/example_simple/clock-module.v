@@ -43,10 +43,10 @@ reg [25:0] rPhaseLatch1 = 0;  // latched counter value 1
 reg [pWIDTH-1:0] rLatch2 = 0;  // latched counter value 2
 reg [25:0] rPhaseLatch2 = 0;  // latched counter value 2
 
-reg [25:0] iCLK_ff = 26'b1;  // the flip-flopped clock gate
-reg [25:0] iCLK_ff_p = 0;  // the flip-flopped clock gate
-reg [25:0] iCLK_ff_n = 0;  // the flip-flopped clock gate
-reg [6:0] rSynthClock = 0;
+wire [25:0] iCLK_ff ;//26'b1;  // the flip-flopped clock gate
+wire [25:0] iCLK_ff_p ;  // the flip-flopped clock gate
+wire [25:0] iCLK_ff_n ;  // the flip-flopped clock gate
+wire [6:0] rSynthClock ;
 
 reg latchLock1 = 0;     // iLatch1 was set, and the value is copied to rLatch1; prevents update to register 1 until reset
 reg latchLock2 = 0;     // iLatch2 was signaled, the value is copied to rLatch2; prevents update to reigster 2 until reset
@@ -78,10 +78,13 @@ begin
 	 debug[8] = oRdyCOUNTER;
 	 debug[9] = oRdyCOUNTER2;
 	 debug[22:16] = rSynthClock[6:0];
+	 //debug[22:16] = iCLK_ff_n[6:0];
 end
+
 //assign debug = 0;
 
 always begin	 
+	#1
    latchLock1 <= ( iLatch1 || latchLock1 ) && !( !iLatch1 && ( rstLatchLock1 ||iResetLatch1 ) );
 	rstLatchLock1 <= ( iLatch1 && (iResetLatch1 || rstLatchLock1) ) ;
 	
@@ -101,10 +104,12 @@ always @(posedge iLatch2 ) begin
 end
 
 
+
 always begin
    #1
 	rSynthClock[0] = !rSynthClock[0];
 end
+
 
 always @(posedge rSynthClock[0] ) rSynthClock[1] = !rSynthClock[1];
 always @(posedge rSynthClock[1] ) rSynthClock[2] = !rSynthClock[2];
@@ -115,141 +120,152 @@ always @(posedge rSynthClock[5] ) rSynthClock[6] = !rSynthClock[6];
 
 
 
-/*
+
 always @(posedge globalClock ) 	iCLK_ff_p[0] = !(iCLK_ff_n[0]);
 always @(negedge globalClock) 	iCLK_ff_n[0] = (iCLK_ff_p[0]);
-always begin  #5    iCLK_ff[0] = iCLK_ff_p[0] ^ iCLK_ff_n[0];  end
+assign   iCLK_ff[0] = iCLK_ff_p[0] ^ iCLK_ff_n[0];
 
 
 always @(posedge iCLK_ff[0] ) 	iCLK_ff_p[1] = !(iCLK_ff_n[1]);
 always @(negedge iCLK_ff[0]) 	iCLK_ff_n[1] = (iCLK_ff_p[1]);
-always begin  #5    iCLK_ff[1] = iCLK_ff_p[1] ^ iCLK_ff_n[1];  end
+assign    iCLK_ff[1] = iCLK_ff_p[1] ^ iCLK_ff_n[1];
 
 
 always @(posedge iCLK_ff[1] ) 	iCLK_ff_p[2] = !(iCLK_ff_n[2]);
 always @(negedge iCLK_ff[1]) 	iCLK_ff_n[2] = (iCLK_ff_p[2]);
-always begin  #5    iCLK_ff[2] = iCLK_ff_p[2] ^ iCLK_ff_n[2];  end
+assign    iCLK_ff[2] = iCLK_ff_p[2] ^ iCLK_ff_n[2];
 
 
 always @(posedge iCLK_ff[2] ) 	iCLK_ff_p[3] = !(iCLK_ff_n[3]);
 always @(negedge iCLK_ff[2]) 	iCLK_ff_n[3] = (iCLK_ff_p[3]);
-always begin  #5    iCLK_ff[3] = iCLK_ff_p[3] ^ iCLK_ff_n[3];  end
+assign    iCLK_ff[3] = iCLK_ff_p[3] ^ iCLK_ff_n[3];
 
 
 always @(posedge iCLK_ff[3] ) 	iCLK_ff_p[4] = !(iCLK_ff_n[4]);
 always @(negedge iCLK_ff[3]) 	iCLK_ff_n[4] = (iCLK_ff_p[4]);
-always begin  #5    iCLK_ff[4] = iCLK_ff_p[4] ^ iCLK_ff_n[4];  end
+assign    iCLK_ff[4] = iCLK_ff_p[4] ^ iCLK_ff_n[4];
 
 
 always @(posedge iCLK_ff[4] ) 	iCLK_ff_p[5] = !(iCLK_ff_n[5]);
 always @(negedge iCLK_ff[4]) 	iCLK_ff_n[5] = (iCLK_ff_p[5]);
-always begin  #5    iCLK_ff[5] = iCLK_ff_p[5] ^ iCLK_ff_n[5];  end
+assign    iCLK_ff[5] = iCLK_ff_p[5] ^ iCLK_ff_n[5];
 
 
 always @(posedge iCLK_ff[5] ) 	iCLK_ff_p[6] = !(iCLK_ff_n[6]);
 always @(negedge iCLK_ff[5]) 	iCLK_ff_n[6] = (iCLK_ff_p[6]);
-always begin  #5    iCLK_ff[6] = iCLK_ff_p[6] ^ iCLK_ff_n[6];  end
+assign    iCLK_ff[6] = iCLK_ff_p[6] ^ iCLK_ff_n[6];
 
 
 always @(posedge iCLK_ff[6] ) 	iCLK_ff_p[7] = !(iCLK_ff_n[7]);
 always @(negedge iCLK_ff[6]) 	iCLK_ff_n[7] = (iCLK_ff_p[7]);
-always begin  #5    iCLK_ff[7] = iCLK_ff_p[7] ^ iCLK_ff_n[7];  end
+assign    iCLK_ff[7] = iCLK_ff_p[7] ^ iCLK_ff_n[7];
 
 
 always @(posedge iCLK_ff[7] ) 	iCLK_ff_p[8] = !(iCLK_ff_n[8]);
 always @(negedge iCLK_ff[7]) 	iCLK_ff_n[8] = (iCLK_ff_p[8]);
-always begin  #5    iCLK_ff[8] = iCLK_ff_p[8] ^ iCLK_ff_n[8];  end
+assign    iCLK_ff[8] = iCLK_ff_p[8] ^ iCLK_ff_n[8];
 
 
 always @(posedge iCLK_ff[8] ) 	iCLK_ff_p[9] = !(iCLK_ff_n[9]);
 always @(negedge iCLK_ff[8]) 	iCLK_ff_n[9] = (iCLK_ff_p[9]);
-always begin  #5    iCLK_ff[9] = iCLK_ff_p[9] ^ iCLK_ff_n[9];  end
+assign    iCLK_ff[9] = iCLK_ff_p[9] ^ iCLK_ff_n[9];
 
 
 always @(posedge iCLK_ff[9] ) 	iCLK_ff_p[10] = !(iCLK_ff_n[10]);
 always @(negedge iCLK_ff[9]) 	iCLK_ff_n[10] = (iCLK_ff_p[10]);
-always begin  #5    iCLK_ff[10] = iCLK_ff_p[10] ^ iCLK_ff_n[10];  end
+assign    iCLK_ff[10] = iCLK_ff_p[10] ^ iCLK_ff_n[10];
 
 
 always @(posedge iCLK_ff[10] ) 	iCLK_ff_p[11] = !(iCLK_ff_n[11]);
 always @(negedge iCLK_ff[10]) 	iCLK_ff_n[11] = (iCLK_ff_p[11]);
-always begin  #5    iCLK_ff[11] = iCLK_ff_p[11] ^ iCLK_ff_n[11];  end
+assign    iCLK_ff[11] = iCLK_ff_p[11] ^ iCLK_ff_n[11];
 
 
 always @(posedge iCLK_ff[11] ) 	iCLK_ff_p[12] = !(iCLK_ff_n[12]);
 always @(negedge iCLK_ff[11]) 	iCLK_ff_n[12] = (iCLK_ff_p[12]);
-always begin  #5    iCLK_ff[12] = iCLK_ff_p[12] ^ iCLK_ff_n[12];  end
+assign    iCLK_ff[12] = iCLK_ff_p[12] ^ iCLK_ff_n[12];
 
 
 always @(posedge iCLK_ff[12] ) 	iCLK_ff_p[13] = !(iCLK_ff_n[13]);
 always @(negedge iCLK_ff[12]) 	iCLK_ff_n[13] = (iCLK_ff_p[13]);
-always begin  #5    iCLK_ff[13] = iCLK_ff_p[13] ^ iCLK_ff_n[13];  end
+assign    iCLK_ff[13] = iCLK_ff_p[13] ^ iCLK_ff_n[13];
 
 
 always @(posedge iCLK_ff[13] ) 	iCLK_ff_p[14] = !(iCLK_ff_n[14]);
 always @(negedge iCLK_ff[13]) 	iCLK_ff_n[14] = (iCLK_ff_p[14]);
-always begin  #5    iCLK_ff[14] = iCLK_ff_p[14] ^ iCLK_ff_n[14];  end
+assign    iCLK_ff[14] = iCLK_ff_p[14] ^ iCLK_ff_n[14];
 
 
 always @(posedge iCLK_ff[14] ) 	iCLK_ff_p[15] = !(iCLK_ff_n[15]);
 always @(negedge iCLK_ff[14]) 	iCLK_ff_n[15] = (iCLK_ff_p[15]);
-always begin  #5    iCLK_ff[15] = iCLK_ff_p[15] ^ iCLK_ff_n[15];  end
+assign    iCLK_ff[15] = iCLK_ff_p[15] ^ iCLK_ff_n[15];
 
 
 always @(posedge iCLK_ff[15] ) 	iCLK_ff_p[16] = !(iCLK_ff_n[16]);
 always @(negedge iCLK_ff[15]) 	iCLK_ff_n[16] = (iCLK_ff_p[16]);
-always begin  #5    iCLK_ff[16] = iCLK_ff_p[16] ^ iCLK_ff_n[16];  end
+assign    iCLK_ff[16] = iCLK_ff_p[16] ^ iCLK_ff_n[16];
 
 
 always @(posedge iCLK_ff[16] ) 	iCLK_ff_p[17] = !(iCLK_ff_n[17]);
 always @(negedge iCLK_ff[16]) 	iCLK_ff_n[17] = (iCLK_ff_p[17]);
-always begin  #5    iCLK_ff[17] = iCLK_ff_p[17] ^ iCLK_ff_n[17];  end
+assign    iCLK_ff[17] = iCLK_ff_p[17] ^ iCLK_ff_n[17];
 
 
 always @(posedge iCLK_ff[17] ) 	iCLK_ff_p[18] = !(iCLK_ff_n[18]);
 always @(negedge iCLK_ff[17]) 	iCLK_ff_n[18] = (iCLK_ff_p[18]);
-always begin  #5    iCLK_ff[18] = iCLK_ff_p[18] ^ iCLK_ff_n[18];  end
+assign    iCLK_ff[18] = iCLK_ff_p[18] ^ iCLK_ff_n[18];
 
 
 always @(posedge iCLK_ff[18] ) 	iCLK_ff_p[19] = !(iCLK_ff_n[19]);
 always @(negedge iCLK_ff[18]) 	iCLK_ff_n[19] = (iCLK_ff_p[19]);
-always begin  #5    iCLK_ff[19] = iCLK_ff_p[19] ^ iCLK_ff_n[19];  end
+assign    iCLK_ff[19] = iCLK_ff_p[19] ^ iCLK_ff_n[19];
 
 
 always @(posedge iCLK_ff[19] ) 	iCLK_ff_p[20] = !(iCLK_ff_n[20]);
 always @(negedge iCLK_ff[19]) 	iCLK_ff_n[20] = (iCLK_ff_p[20]);
-always begin  #5    iCLK_ff[20] = iCLK_ff_p[20] ^ iCLK_ff_n[20];  end
+assign    iCLK_ff[20] = iCLK_ff_p[20] ^ iCLK_ff_n[20];
 
 
 always @(posedge iCLK_ff[20] ) 	iCLK_ff_p[21] = !(iCLK_ff_n[21]);
 always @(negedge iCLK_ff[20]) 	iCLK_ff_n[21] = (iCLK_ff_p[21]);
-always begin  #5    iCLK_ff[21] = iCLK_ff_p[21] ^ iCLK_ff_n[21];  end
+assign    iCLK_ff[21] = iCLK_ff_p[21] ^ iCLK_ff_n[21];
 
 
 always @(posedge iCLK_ff[21] ) 	iCLK_ff_p[22] = !(iCLK_ff_n[22]);
 always @(negedge iCLK_ff[21]) 	iCLK_ff_n[22] = (iCLK_ff_p[22]);
-always begin  #5    iCLK_ff[22] = iCLK_ff_p[22] ^ iCLK_ff_n[22];  end
+assign    iCLK_ff[22] = iCLK_ff_p[22] ^ iCLK_ff_n[22];
 
 
 always @(posedge iCLK_ff[22] ) 	iCLK_ff_p[23] = !(iCLK_ff_n[23]);
 always @(negedge iCLK_ff[22]) 	iCLK_ff_n[23] = (iCLK_ff_p[23]);
-always begin  #5    iCLK_ff[23] = iCLK_ff_p[23] ^ iCLK_ff_n[23];  end
+assign    iCLK_ff[23] = iCLK_ff_p[23] ^ iCLK_ff_n[23];
 
 
 always @(posedge iCLK_ff[23] ) 	iCLK_ff_p[24] = !(iCLK_ff_n[24]);
 always @(negedge iCLK_ff[23]) 	iCLK_ff_n[24] = (iCLK_ff_p[24]);
-always begin  #5    iCLK_ff[24] = iCLK_ff_p[24] ^ iCLK_ff_n[24];  end
+assign    iCLK_ff[24] = iCLK_ff_p[24] ^ iCLK_ff_n[24];
 
 
 always @(posedge iCLK_ff[24] ) 	iCLK_ff_p[25] = !(iCLK_ff_n[25]);
 always @(negedge iCLK_ff[24]) 	iCLK_ff_n[25] = (iCLK_ff_p[25]);
-always begin  #5    iCLK_ff[25] = iCLK_ff_p[25] ^ iCLK_ff_n[25];  end
+assign    iCLK_ff[25] = iCLK_ff_p[25] ^ iCLK_ff_n[25];
+
+
+
+
+/*
+always @(posedge iCLK_ff_n[0] 
+	//	or posedge iCLK_ff[1] 
+		or posedge iCLK_ff_n[2] 
+//		or posedge iCLK_ff[3] 
+		or posedge iCLK_ff_n[4] 
+	//	or posedge iCLK_ff[5] 
+		or posedge iCLK_ff_n[6] 
+	//	or posedge iCLK_ff[7] 
+)
 */
 
-
-//
-always @(posedge rSynthClock[2])
-//always @(posedge globalClock)
+always @(posedge rSynthClock[1])
 begin
       #1
 		rCOUNTER = rCOUNTER+1;

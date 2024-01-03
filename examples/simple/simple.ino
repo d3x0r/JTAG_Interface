@@ -46,7 +46,7 @@ uint32_t ticks3_ = 0;
 uint32_t last_millis = 0;
 uint32_t reset_millis;
 uint32_t reset = 0;
-//#define _DEBUG
+#define _DEBUG
 
 void readFPGA();
 void readSerial();
